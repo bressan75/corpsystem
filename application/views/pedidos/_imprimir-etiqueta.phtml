@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<title>Jeito de Moça - Sistema v1.0</title>
+<base href="<?php echo site_url() ?>"/>
+<link rel="icon" href="img/favicon.ico">
+<style>
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+    margin: 0;
+}
+
+</style>
+</head>
+<body>
+<table>
+    <tr>
+        <td style="width:300px" valign="top">
+            <table>
+                <tr>
+                    <td style="border:1px dotted #555;padding:20px">
+                    <table>
+                        <?php if(!empty($pedido['postagem']) && ($pedido['postagem'] == 'Sedex' || $pedido['postagem'] == 'Sedex10' || $pedido['postagem'] == 'SedexHoje' || $pedido['postagem'] == 'PAC')): ?>
+                        <tr>
+                            <td align="right">
+                                <?php if($pedido['postagem'] == 'Sedex'): ?>
+                                <img src="img/chancela-sedex.png"/>
+                                <?php endif ?>
+                                <?php if($pedido['postagem'] == 'Sedex10'): ?>
+                                <img src="img/chancela-sedex10.png"/>
+                                <?php endif ?>
+                                <?php if($pedido['postagem'] == 'SedexHoje'): ?>
+                                <img src="img/chancela-sedexhoje.png"/>
+                                <?php endif ?>
+                                <?php if($pedido['postagem'] == 'PAC'): ?>
+                                <img src="img/chancela-pac.png"/>
+                                <?php endif ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="40"></td>
+                        </tr>
+                        <?php endif ?>
+                        <tr>
+                            <td width="260">
+                                <table style="border:1px solid #000">
+                                    <tr>
+                                        <td style="font-size:14px;font-weight:bold;padding:10px">Destinatário</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:10px">
+                                            <?php echo $cliente['cliente']; ?><br>
+                                            <?php echo $cliente['endereco']; ?>, <?php echo $cliente['numero']; ?><br>
+                                            <?php echo $cliente['complemento'] ? $cliente['complemento'] . '<br>' : '' ; ?>
+                                            <?php echo $cliente['bairro']; ?><br><br>
+                                            <span style="font-weight:bold;font-size:14px"><?php echo $cliente['cep']; ?></span> - <?php echo $cliente['cidade']; ?>, <?php echo $cliente['estado']; ?>
+                                        </td>                        
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="20"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <td style="font-size:12px;font-weight:bold;padding:0 10px">Remetente</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0 10px">
+                                            Bianca Mayra Andrade<br>
+                                            Rua Córrego do Bom Jesus, 881<br>
+                                            Cidade Centenário<br>
+                                            03933-030 - São Paulo, SP
+                                        <td>
+                                    </tr>
+                                </table>
+                            <td>
+                        </tr>
+                    </table>
+                <td>
+            </tr>
+        </table>
+        </td>
+        <td width="10"></td>
+        <td valign="top" style="border-left:1px dotted #555">
+            
+            <table>
+                <tr>
+                    <td style="font-size:24px;padding:0 10px;text-align:center">
+                        <img src="img/logo-correios.png" style="margin:-10px 40px 0 0;vertical-align:middle">Declaração de Conteúdo
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:2px 10px">
+                        
+                        <table style="border:2px solid #000">
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0 2px 10px;width:130px">
+                                    <span style="font-weight:bold">REMETENTE:</span>
+                                </td>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0" colspan="2">
+                                    Bianca Mayra Andrade Kolano
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0 2px 10px">
+                                    <span style="font-weight:bold">CPF/CNPJ:</span>                                    
+                                </td>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0" colspan="2">
+                                    30.074.255/0001-60
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0 2px 10px">
+                                    <span style="font-weight:bold">ENDEREÇO:</span>                                    
+                                </td>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0" colspan="2">
+                                    Rua Córrego do Bom Jesus, 881 - 
+                                    Cidade Centenário
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size:14px;padding:2px 0 2px 10px">
+                                    <span style="font-weight:bold">CIDADE/UF:</span>                                    
+                                </td>
+                                <td style="font-size:14px;padding:2px 0">
+                                    São Paulo / SP
+                                </td>
+                                <td style="border-left:1px solid #000;font-size:14px;padding:2px 0 2px 10px;width:150px">
+                                   <span style="font-weight:bold;margin:0 10px 0 0">CEP:</span> 03933-030
+                                </td>
+                            </tr> 
+                        </table>
+                        
+                        <table style="border:2px solid #000;margin:10px 0 0 0">
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0 2px 10px;width:130px">
+                                    <span style="font-weight:bold">DESTINATÁRIO:</span>
+                                </td>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0" colspan="2">
+                                    <?php echo $cliente['cliente']; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0 2px 10px">
+                                    <span style="font-weight:bold">CPF/CNPJ:</span>                                    
+                                </td>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0" colspan="2">
+                                    <?php echo !empty($cliente['documento']) ? $cliente['documento'] : '--'; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0 2px 10px">
+                                    <span style="font-weight:bold">ENDEREÇO:</span>                                    
+                                </td>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 0" colspan="2">
+                                    <?php echo $cliente['endereco']; ?>, <?php echo $cliente['numero']; ?> - 
+                                    <?php echo $cliente['complemento'] ?  $cliente['complemento'] .' - ' : '' ; ?>
+                                    <?php echo $cliente['bairro']; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="font-size:14px;padding:2px 0 2px 10px">
+                                    <span style="font-weight:bold">CIDADE/UF:</span>                                    
+                                </td>
+                                <td style="font-size:14px;padding:2px 0">
+                                    <?php echo $cliente['cidade']; ?>/<?php echo $cliente['estado']; ?>
+                                </td>
+                                <td style="border-left:1px solid #000;font-size:14px;padding:2px 0 2px 10px;width:150px">
+                                   <span style="font-weight:bold;margin:0 10px 0 0">CEP:</span> <?php echo $cliente['cep']; ?>
+                                </td>
+                            </tr> 
+                        </table>
+                        
+                        
+                        <table style="border:2px solid #000;margin:10px 0 0 0">
+                            <tr>
+                                <td style="background:#e0e0e0;border-bottom:1px solid #000;font-size:14px;padding:2px 10px;text-align:center" colspan="3">
+                                    IDENTIFICAÇÃO DOS BENS
+                                </td>                                
+                            </tr>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 10px;text-align:center">
+                                    <span style="font-weight:bold">DISCRIMINAÇÃO DO CONTEÚDO</span>
+                                </td>
+                                <td style="border-bottom:1px solid #000;border-left:1px solid #000;font-size:14px;padding:2px 10px;text-align:center;width:120px">
+                                    <span style="font-weight:bold">QUANTIDADE</span>
+                                </td>
+                                <td style="border-bottom:1px solid #000;border-left:1px solid #000;font-size:14px;padding:2px 10px;text-align:center;width:120px">
+                                    <span style="font-weight:bold">PESO</span>
+                                </td>   
+                            </tr>
+                            <?php $c = 0; foreach ($pedidos as $status => $dados):  ?>
+                            <?php $total = 0; foreach ($dados as $dado): $total += $dado['subtotal']; ?>
+                            <?php if(!empty($dado['itens'])): ?>
+                            <?php foreach ($dado['itens'] as $item): ?>
+                            <?php if($item['tipo'] == 'Produto'): $c++; ?>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 10px">
+                                    <?php echo $item['item'] ?><?php echo $item['cordao'] ? ' (cordão de '. $item['cordao'] .' cm)' : '' ?>
+                                </td>
+                                <td style="border-bottom:1px solid #000;border-left:1px solid #000;font-size:14px;padding:2px 10px">
+                                    <?php echo $item['quantidade'] ?>
+                                </td>
+                                <td style="border-bottom:1px solid #000;border-left:1px solid #000;font-size:14px;padding:2px 10px;text-align:center">
+                                    <?php echo 5 * $item['quantidade'] ?> gramas
+                                </td>   
+                            </tr>
+                            <?php endif ?>
+                            <?php endforeach ?>
+                            <?php endif ?>
+                            <?php endforeach ?>
+                            <?php endforeach ?>
+                            <?php if ($c < 5): ?>
+                            <?php for ($i = 0; $i<(5-$c); $i++): ?>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 10px">
+                                    &nbsp;
+                                </td>
+                                <td style="border-bottom:1px solid #000;border-left:1px solid #000;font-size:14px;padding:2px 10px">
+                                    &nbsp;
+                                </td>
+                                <td style="border-bottom:1px solid #000;border-left:1px solid #000;font-size:14px;padding:2px 10px;text-align:center">
+                                    &nbsp;
+                                </td>   
+                            </tr>
+                            <?php endfor ?>
+                            <?php endif ?>
+                            <tr>
+                                <td style="border-bottom:1px solid #000;font-size:14px;padding:2px 10px;text-align:center" colspan="2">
+                                    <span style="font-weight:bold">VALOR TOTAL</span>
+                                </td>
+                                <td style="border-bottom:1px solid #000;border-left:1px solid #000;font-size:14px;padding:2px 10px;text-align:center">
+                                    <?php if(!empty($total) && $total > 0): ?>
+                                    <span style="font-weight:bold">R$ <?php echo number_format($total, 2, ',', '.') ?></span>
+                                    <?php endif ?>
+                                </td>   
+                            </tr>
+                        </table>
+                        
+                        <table style="border:2px solid #000;margin:10px 0 0 0">
+                            <tr>
+                                <td style="background:#e0e0e0;border-bottom:1px solid #000;font-size:14px;padding:2px 10px;text-align:center" colspan="3">
+                                    DECLARAÇÃO
+                                </td>                                
+                            </tr>
+                            <tr>
+                                <td style="font-size:9px;padding:2px 10px" colspan="3">
+                                    Declaro, não ser pessoa física ou jurídica, que realize, com habitualidade
+                                    ou em volume que caracterize intuito comercial, operações de circulação
+                                    de mercadoria, ainda que estas se iniciem no exterior, que o conteúdo
+                                    declarado e não está sujeito à tributação, e que sou o único responsável
+                                    por eventuais penalidades ou danos decorrentes de informações inverídicas.
+                                </td>                                
+                            </tr>
+                            <tr>
+                                <td style="font-size:11px;padding:20px 0 0 10px;text-align:center">
+                                    São Paulo, <?php echo  date('d') ?> de <?php echo $mes[date('m')] ?> de <?php echo date('Y') ?>                                    
+                                </td>
+                                <td style="border-bottom:1px solid #000;padding:2px 10px;width:200px"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td style="font-size:11px;padding:2px 10px;text-align:center">
+                                    Assinatura do<br>Declarante/Remetente
+                                </td>
+                                <td style="width:40px"></td>
+                            </tr>
+                        </table>
+                        
+                        <table style="border:2px solid #000;margin:10px 0 0 0">
+                            <tr>
+                                <td style="border-bottom:2px solid #000;font-size:11px;padding:2px 10px">
+                                    Atenção: O declarante/remetente é responsável exclusivamente pelas informações declaradas.
+                                </td>                                
+                            </tr>
+                            <tr>
+                                <td style="font-size:9px;padding:2px 10px">
+                                    <span style="font-weight:bold">OBSERVAÇÕES:</span><br>
+                                    III. É Contribuinte de ICMS qualquer pessoa física ou jurídica,
+                                    que realize, com habitualidade ou em volume que caracterize
+                                    intuito comercial, operações de circulação de mercadoria ou
+                                    prestações de serviços de transportes interestadual e intermunicipal
+                                    e de comunicação, ainda que as operações e prestações se iniciem
+                                    no exterior (Lei Complementar nº 87/96 Art. 4º).<br>
+                                    
+                                    IV.	Constitui crime contra a ordem tributária suprimir ou
+                                    reduzir tributo, ou contribuição social e qualquer acessório:
+                                    quando negar ou deixar de fornecer, quando obrigatório,
+                                    nota fiscal ou documento equivalente, relativa a venda de
+                                    mercadoria ou prestação de serviço, efetivamente realizada,
+                                    ou fornecê-la em desacordo com a legislação. Sob pena de
+                                    reclusão de 2 (dois) a 5 (anos), e multa (Lei 8.137/90 Art. 1º, V).
+
+                                </td>                                
+                            </tr>  
+                        </table>
+                        
+                    <td>
+                </tr>
+            </table>
+            
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

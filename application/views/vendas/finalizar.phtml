@@ -1,0 +1,197 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="vendas">Listar Produtos <span class="sr-only">(atual)</span></a></li>
+            <li><a href="vendas/carrinho">Carrinho<?php echo $total_itens > 0 ? ' ('. $total_itens .')' : '' ?></a></li>
+            <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                    $this->session->userdata('nivel') == 'Gerente'): ?>
+            <li><a href="vendas/listar-vendas">Listar Vendas</a></li>
+            <?php endif ?>
+          </ul>          
+        </div>
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Finalizar Compra
+              <div class="pull-right">
+                  = <span class="cl-verde">R$ <?php echo number_format($total, 2, ',', '') ?></span>
+              </div>
+            
+            </h1>
+            
+            <?php if (validation_errors()): ?>
+            <div class="alert alert-danger" role="alert">
+              <strong>Hmmm!</strong> Alguns erros foram encontrados...
+            </div>
+            <?php endif ?>
+          
+            <form action="vendas/finalizar/<?php echo !empty($cliente['id']) ? $cliente['id'] : '' ?>" name="ffinalizar" id="ffinalizar" method="Post">
+                <?php if (!empty($cliente['id'])): ?>
+                <input type="hidden" name="id" value="<?php echo $cliente['id'] ?>">
+                <?php endif ?>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group<?php echo form_error('cliente') ? ' has-error' : '' ?>">
+                          <label for="cliente">Cliente</label>
+                          <input type="text" class="form-control" autocomplete="off" name="cliente" id="cliente" value="<?php echo set_value('cliente', (!empty($cliente['cliente']) ? $cliente['cliente'] : '')); ?>">
+                          <div id="autocliente" class="list-group esconder"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="documento">Documento</label>
+                                    <div class="input-group<?php echo form_error('documento') ? ' has-error' : '' ?>">
+                                        <input type="text" class="form-control mask-doc" name="documento" id="documento" value="<?php echo set_value('documento', (!empty($cliente['documento']) ? $cliente['documento'] : '')); ?>"<?php echo (!empty($cliente['documento']) ? ' disabled="disabled"' : '')?>>
+                                        <span class="input-group-btn">
+                                            <a href="vendas/finalizar" class="btn btn-primary"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Limpar</a>
+                                        </span>
+                                    </div>
+                                    <div id="autodocumento" class="list-group esconder"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">                            
+                                <div class="form-group">
+                                    <label for="email">E-mail</label>
+                                    <input type="email" class="form-control" name="email" id="email" value="<?php echo set_value('email', (!empty($cliente['email']) ? $cliente['email'] : '')); ?>">
+                                </div>
+                            </div>
+    
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="telefone">Telefone</label>
+                                    <input type="telefone" class="form-control mask-fone" name="telefone" id="telefone" value="<?php echo set_value('telefone', (!empty($cliente['telefone']) ? $cliente['telefone'] : '')); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group<?php echo form_error('cep') ? ' has-error' : '' ?>">
+                                  <label for="cep">CEP</label>
+                                  <input type="text" class="form-control cep mask-cep" name="cep" id="cep" value="<?php echo set_value('cep', (!empty($cliente['cep']) ? $cliente['cep'] : '')); ?>" maxlength="9">
+                                </div>
+                            </div>                        
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="form-group<?php echo form_error('endereco') ? ' has-error' : '' ?>">
+                                  <label for="endereco">Endereço</label>
+                                  <input type="text" class="form-control" name="endereco" id="endereco" value="<?php echo set_value('endereco', (!empty($cliente['endereco']) ? $cliente['endereco'] : '')); ?>">
+                                </div>
+                            </div>                        
+                            <div class="col-sm-4">
+                                <div class="form-group<?php echo form_error('numero') ? ' has-error' : '' ?>">
+                                  <label for="numero">N.</label>
+                                  <input type="text" class="form-control" name="numero" id="numero" value="<?php echo set_value('numero', (!empty($cliente['numero']) ? $cliente['numero'] : '')); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group<?php echo form_error('complemento') ? ' has-error' : '' ?>">
+                            <label for="complemento">Complemento</label>
+                            <input type="text" class="form-control" name="complemento" id="complemento" value="<?php echo set_value('complemento', (!empty($cliente['complemento']) ? $cliente['complemento'] : '')); ?>">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group<?php echo form_error('bairro') ? ' has-error' : '' ?>">
+                                  <label for="bairro">Bairro</label>
+                                  <input type="text" class="form-control" name="bairro" id="bairro" value="<?php echo set_value('bairro', (!empty($cliente['bairro']) ? $cliente['bairro'] : '')); ?>">
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group<?php echo form_error('cidade') ? ' has-error' : '' ?>">
+                                  <label for="cidade">Cidade</label>
+                                  <input type="text" class="form-control" name="cidade" id="cidade" value="<?php echo set_value('cidade', (!empty($cliente['cidade']) ? $cliente['cidade'] : '')); ?>">
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group<?php echo form_error('estado') ? ' has-error' : '' ?>">
+                                  <label for="estado">Estado</label>
+                                  <input type="text" class="form-control" name="estado" id="estado" value="<?php echo set_value('estado', (!empty($cliente['estado']) ? $cliente['estado'] : '')); ?>">
+    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="observacao">Observação</label>
+                            <textarea name="observacao" class="form-control" rows="3"><?php echo set_value('observacao', (!empty($cliente['observacao']) ? $cliente['observacao'] : '')); ?></textarea>
+                         </div>
+                    </div>
+                    <div class="col-md-6">
+                         <?php if (!empty($pagamento)): ?>
+                        <?php for ($i=0;$i<count($pagamento);$i++) :?>
+                        <div class="row metodo-pagamento">
+                            <div class="col-md-6">
+                                <label for="pagamento">Forma de Pagamento</label>
+                                <div class="form-group<?php echo form_error('pagamento[]') ? ' has-error' : '' ?>">
+                                      <select class="form-control pagamento" name="pagamento[]">
+                                          <option value="Outros"<?php echo $pagamento[$i] == 'Outros' ? ' selected="selected"' : '' ?>>Outros</option>
+                                          <option value="Dinheiro"<?php echo $pagamento[$i] == 'Dinheiro' ? ' selected="selected"' : '' ?>>Dinheiro</option>
+                                          <option value="Débito"<?php echo $pagamento[$i] == 'Débito' ? ' selected="selected"' : '' ?>>Débito</option>
+                                          <option value="Crédito à Vista"<?php echo $pagamento[$i] == 'Crédito à Vista' ? ' selected="selected"' : '' ?>>Crédito à Vista</option>
+                                          <option value="Crédito Parcelado"<?php echo $pagamento[$i] == 'Crédito Parcelado' ? ' selected="selected"' : '' ?>>Crédito Parcelado</option>
+                                      </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="recebido">
+                                    <div class="form-group<?php echo form_error('recebido[]') ? ' has-error' : '' ?>">
+                                        <label for="pago">Valor Recebido</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control valor" name="recebido[]" value="<?php echo set_value('recebido[]'); ?>">
+                                            <span class="input-group-btn">
+                                                <a href="#" class="btn btn-default" onclick="return mais_recebido(this)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                                                <a href="#" class="btn btn-default" onclick="return menos_recebido(this)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endfor ?>
+                        <?php else: ?>
+                        
+                        <div class="row metodo-pagamento">
+                            <div class="col-md-6">
+                                <label for="pagamento">Forma de Pagamento</label>
+                                <div class="form-group<?php echo form_error('pagamento[]') ? ' has-error' : '' ?>">
+                                      <select class="form-control pagamento" name="pagamento[]">
+                                          <option value="Outros"<?php echo set_select('pagamento[]', 'Outros', true) ?>>Outros</option>
+                                          <option value="Dinheiro"<?php echo set_select('pagamento[]', 'Dinheiro') ?>>Dinheiro</option>
+                                          <option value="Débito"<?php echo set_select('pagamento[]', 'Débito') ?>>Débito</option>
+                                          <option value="Crédito à Vista"<?php echo set_select('pagamento[]', 'Crédito à Vista') ?>>Crédito à Vista</option>
+                                          <option value="Crédito Parcelado"<?php echo set_select('pagamento[]', 'Crédito Parcelado') ?>>Crédito Parcelado</option>
+                                      </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="recebido">
+                                    <div class="form-group<?php echo form_error('recebido[]') ? ' has-error' : '' ?>">
+                                        <label for="pago">Valor Recebido</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control valor" name="recebido[]" value="<?php echo set_value('recebido[]', number_format($total, 2, ',', '')); ?>">
+                                            <span class="input-group-btn">
+                                                <a href="#" class="btn btn-default" onclick="return mais_recebido(this)"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+                                                <a href="#" class="btn btn-default" onclick="return menos_recebido(this)"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <?php endif ?>
+                        
+                        <div id="resultado" class="text-right"></div>
+                        
+                    </div>
+                </div>
+
+                <button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Confirmar</button>
+            </form>
+          
+        </div>
+    </div>
+</div>

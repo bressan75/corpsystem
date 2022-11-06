@@ -1,0 +1,133 @@
+<div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="pedidos/listar-pedidos">Listar Pedidos <span class="sr-only">(atual)</span></a></li>
+            <li><a href="pedidos/adicionar-pedido">Adicionar Pedido</a></li>
+          </ul>           
+        </div>
+                
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Listar Pedidos
+          <div class="pull-right">            
+            <a class="btn btn-success" href="pedidos/adicionar-pedido" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span class="desc">Adicionar Pedido</span></a>
+          </div>
+          <div class="clearfix"></div>
+          </h1>
+          
+          <?php if ($this->session->flashdata('sucesso')): ?>
+          <div class="alert alert-success" role="alert">
+            <strong>Uhuuu!</strong> <?php echo $this->session->flashdata('sucesso'); ?>
+          </div>
+          <?php endif ?>
+          
+          <?php if ($this->session->flashdata('falha')): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Ahhhh!</strong> <?php echo $this->session->flashdata('falha'); ?>
+          </div>
+          <?php endif ?>
+          
+          <ul class="nav nav-tabs">
+            <li role="presentation"<?php echo $status == 'pendente' ? ' class="active"' : ''?>><a href="pedidos/listar-pedidos/pendente">Pendente</a></li>
+            <li role="presentation"<?php echo $status == 'producao' ? ' class="active"' : ''?>><a href="pedidos/listar-pedidos/producao">Produção</a></li>                        
+            <li role="presentation"<?php echo $status == 'enviado' ? ' class="active"' : ''?>><a href="pedidos/listar-pedidos/enviado">Enviado</a></li>
+            <li role="presentation"<?php echo $status == 'concluido' ? ' class="active"' : ''?>><a href="pedidos/listar-pedidos/concluido">Concluído</a></li>
+            <li role="presentation"<?php echo $status == 'cancelado' ? ' class="active"' : ''?>><a href="pedidos/listar-pedidos/cancelado">Cancelado</a></li>            
+          </ul>
+          
+          <?php if (count($pedidos) > 0): ?>
+          
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th width="3"></th>
+                  <th>N.</th>
+                  <th>Data</th>
+                  <th>Dias</th>
+                  <th>Cliente</th>                  
+                  <th>R$</th>
+                  <th>Entrega</th>
+                  <?php if($status == 'concluido'): ?>
+                  <th>Rastreio</th>
+                  <?php endif ?>
+                  <th>Origem</th>
+                  <th>Fase</th>                  
+                  <th class="opcoes">Opções</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($pedidos as $pedido): ?>
+                <?php $dias = floor((time() - strtotime($pedido['data'])) / (60 * 60 * 24)); ?>
+                <?php $c = 0; $itens  = ''; $desc = ''; foreach ($pedido['itens'] as $item): $c++ ?>
+                        <?php $desc .=  $item['item']  ?>
+                        <?php $desc .= $c < count($pedido['itens']) ? ', ' : '. ' ?>
+                        <?php $itens .= '<strong>Item</strong>: '. $item['item'] ?>
+                        <?php $itens .= $c < count($pedido['itens']) ? '<hr>' : '' ?>
+                <?php endforeach ?>
+                <tr>
+					<td class="<?php echo $status != 'enviado' && $status != 'concluido' && $status != 'cancelado' ?  ($dias >= 20 ? 'bg-vermelho' : ($dias >= 15 ? 'bg-amarelo' : 'bg-verde')) : '' ?>"></td>
+					<td>
+                        <?php if($pedido['conferido'] == 'Não'): ?>
+                        <span class="cl-vermelho"><?php echo $pedido['id'] ?></span>
+                        <?php else: ?>
+                        <?php echo $pedido['id'] ?>
+                        <?php endif ?>
+					</td>
+					<td><?php echo date('d/m/Y', strtotime($pedido['data'])) ?></td>
+					<td><?php echo $dias ?></td>
+					<td>
+                        <span data-toggle="popover" placement="top" title="Itens do Pedido" data-content="<?php echo $itens ?>">
+                        <span data-toggle="tooltip" title="<?php echo $pedido['cliente'] ?>"><?php echo character_limiter($pedido['cliente'], 25) ?></span>
+                            <span class="itens">
+                            <?php echo character_limiter($desc, 25) ?>
+                            </span>
+                        </span>
+					</td>                  
+					<td><?php echo $pedido['total'] ? number_format($pedido['total'], 2, ',', '.') : '--'  ?></td>                 
+					<td><?php echo $pedido['postagem']; ?></td>										
+					<?php if($status == 'concluido'): ?>
+					<td><?php echo $pedido['rastreio'] ? $pedido['rastreio'] : '--'  ?></td>
+					<?php endif ?>				  
+					<td><?php echo $pedido['origem']; ?></td>                                                 
+					<td>
+                        <select name="status" class="mudar-status form-control input-sm">
+						  <option value="">-Selecione-</option>
+						  <option value=""></option>
+						  <option value="pedidos/status-pedido/<?php echo $status ?>/<?php echo $pedido['id'] ?>/1">Pendente</option>
+						  <option value="pedidos/status-pedido/<?php echo $status ?>/<?php echo $pedido['id'] ?>/2">Produção</option>                                                           
+						  <option value="pedidos/status-pedido/<?php echo $status ?>/<?php echo $pedido['id'] ?>/5">Enviado</option>
+						  <option value="pedidos/status-pedido/<?php echo $status ?>/<?php echo $pedido['id'] ?>/6">Concluído</option>
+						  <option value="pedidos/status-pedido/<?php echo $status ?>/<?php echo $pedido['id'] ?>/7">Cancelado</option>
+                        </select>
+					</td>
+					
+				    <td class="opcoes">
+						<a href="pedidos/ver-pedido/<?php echo $pedido['cliente_id'] ?>/<?php echo $pedido['id'] ?>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span class="desc">Ver</span></a>                    
+						<a href="pedidos/editar-pedido/<?php echo $pedido['id'] ?>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="desc">Editar</span></a>
+						<?php if($this->session->userdata('nivel') == 'Administrador' || $this->session->userdata('nivel') == 'Gerente'): ?>
+						<a href="pedidos/remover-pedido/<?php echo $status ?>/<?php echo $pedido['id'] ?>" onclick="return confirm('Deseja realmente remover esse registro?')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span class="desc">Remover</span></a>
+						<?php endif ?>
+				    </td>
+                </tr>
+                <?php endforeach ?>
+              </tbody>
+            </table>
+          </div>
+          
+        <?php if(!empty($paginacao)): ?>
+          <nav class="paginacao">
+            <?php echo $paginacao ?>
+          </nav>
+          <?php endif ?>
+          
+          <?php else: ?>
+          <div class="vazio">
+            <div class="alert alert-warning" role="alert">
+              <strong>Ops!</strong> Não há nenhum pedido com o status selecionado.
+            </div>
+          </div>
+          <?php endif ?>
+        </div>
+      </div>
+    </div>

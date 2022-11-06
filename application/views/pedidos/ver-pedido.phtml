@@ -1,0 +1,185 @@
+<div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                     $this->session->userdata('nivel') == 'Gerente'): ?>
+            <li class="active"><a href="pedidos/listar-pedidos">Listar Pedidos</a></li>
+            <li><a href="pedidos/adicionar-pedido">Adicionar Pedido</a></li>
+            <?php endif ?>
+          </ul>            
+        </div>
+                
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Ver Pedido
+          <div class="pull-right">
+            <a class="btn btn-default" href="javascript:history.back()" role="button"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span><span class="desc">Voltar</span></a>
+          </div>
+          <div class="clearfix"></div>
+          </h1>
+          
+          <div class="row">
+            <div class="col-md-3">
+                  <?php if($cliente['cliente']): ?>
+                  <div class="item">
+                      <label>Cliente</label>
+                      <p><a href="clientes/editar-cliente/<?php echo $cliente['id']; ?>"><?php echo $cliente['cliente']; ?></a></p>
+                  </div>
+                  <?php endif; ?>
+            </div>
+            <div class="col-md-3">
+                  
+                  <?php if($cliente['email']): ?>
+                  <div class="item">
+                      <label>E-mail</label>
+                      <p><a href="mailto:<?php echo $cliente['email'] ?>"><?php echo $cliente['email'] ?></a></p>
+                  </div>
+                  <?php endif; ?>
+            </div>
+            <div class="col-md-3">            
+                  <?php if($cliente['telefone']): ?>
+                  <div class="item">
+                      <label>Telefone</label>
+                      <p><?php echo $cliente['telefone']; ?></p>
+                  </div>
+                  <?php endif; ?>
+            </div>
+            <div class="col-md-3">
+                  <?php if($cliente['origem']): ?>
+                  <div class="item">
+                      <label>Origem</label>
+                      <p><?php echo $cliente['origem']; ?></p>
+                  </div>
+                  <?php endif; ?>
+            </div>
+      </div>
+      <?php if($cliente['endereco']): ?>
+       <div class="item">
+           <label>Endereço</label>
+           <p><?php echo $cliente['endereco']; ?>, <?php echo $cliente['numero']; ?><br>
+           <?php echo $cliente['complemento'] ? $cliente['complemento'] . '<br>' : '' ; ?>
+           <?php echo $cliente['bairro']; ?><br><br>
+           <?php echo $cliente['cep']; ?> - <?php echo $cliente['cidade']; ?>, <?php echo $cliente['estado']; ?>
+           </p>
+       </div>
+       <?php endif; ?>
+       
+      <?php if($cliente['observacao']): ?>
+      <div class="item">
+          <label>Observação</label>
+          <p><?php echo nl2br(trim($cliente['observacao'])); ?></p>
+      </div>
+      <?php endif; ?>
+       
+      <?php if (!empty($pedidos)): ?>
+      <ul class="nav nav-tabs">
+            <?php $c = 0; foreach ($pedidos as $status => $dados): $c++; ?>
+            <li role="presentation"<?php echo $c == 1 ? 'class="active"' : ''?>><a href="#s_<?php echo $c ?>" aria-controls="s_<?php echo $c ?>" role="tab" data-toggle="tab"><?php echo $status ?></a></li>
+            <?php endforeach; ?>
+      </ul> 
+      
+      <div class="tab-content">
+      
+      <?php $c = 0; foreach ($pedidos as $status => $dados):  $c++; ?>
+      <div role="tabpanel" class="tab-pane <?php echo $c == 1 ? 'active' : ''?>" id="s_<?php echo $c ?>">
+      <div class="table-responsive">
+      <table class="table">
+      
+      <?php $total = 0; foreach ($dados as $dado): $total += $dado['subtotal']; ?>
+      <thead>
+            <tr>
+			  <th class="titulo" colspan="6">
+				<span class="pull-left"><a href="pedidos/editar-pedido/<?php echo $dado['id'] ?>">#<?php echo $dado['id'] ?></a></span>
+				<span class="pull-right"><?php echo date('d/m/Y', strtotime($dado['data'])) ?></span>
+			  </th>
+            </tr> 
+            <tr>                                
+				<th>Item</th>
+				<th></th>
+				<th></th>
+                <th>Qtd.</th>
+				<th></th>
+                <th>Valor (R$)</th>
+            </tr>
+        </thead>
+      <tbody>
+      <?php if(!empty($dado['itens'])): ?>
+      
+      <?php foreach ($dado['itens'] as $item): ?>
+      
+      <?php if($item['tipo'] == 'Produto'): ?>
+			<tr>
+			  <td>
+				<?php echo $item['item'] ?>
+				<span class="itens"><?php echo nl2br($item['descricao']) ?></span>
+			  </td>
+			  <td></td>
+			  <td></td>			  			 
+			  <td><?php echo $item['quantidade'] ?></td>
+			  <td></td>
+			  <td width="100"><?php echo number_format($item['valor'] * $item['quantidade'], 2, ',', '.') ?></td>
+            </tr>
+      <?php endif ?>
+      
+      <?php if($item['tipo'] == 'Encargo'): ?>
+            <tr>
+                  <td colspan="5" align="right"><i>Encargo / <?php echo $item['item'] ?>:</i></td>
+                  <td><i>-<?php echo number_format($item['valor'], 2, ',', '.') ?><i></td>
+            </tr>
+      <?php endif ?>
+      
+      <?php endforeach ?>
+      
+      <?php endif ?>      
+      
+      <?php if(!empty($dado['subtotal'])): ?>
+            <tr>
+                  <td colspan="5" align="right"><strong>Subtotal:</strong></td>
+                  <td><strong><?php echo number_format($dado['subtotal'], 2, ',', '.') ?></strong></td>
+            </tr>
+      <?php endif ?>
+      
+      <?php if($this->session->userdata('nivel') == 'Administrador' ||
+               $this->session->userdata('nivel') == 'Gerente'): ?>
+      <?php if(!empty($dado['empresas'])): ?>
+            <tr>
+                  <td colspan="6"><strong>Fornecedores:</strong>
+                        <?php $c = 0; foreach ($dado['empresas'] as $fornecedor): $c++; ?>
+                        <a href="fornecedores/ver-fornecedor/<?php echo $fornecedor['id'] ?>"><?php echo $fornecedor['empresa']; ?></a><?php echo $c == count($dado['empresas']) ? '.' : ', ' ?>
+                        <?php endforeach ?>                        
+                  </td>                  
+            </tr>
+      <?php endif ?>
+      <?php endif ?>
+      
+      <?php if(!empty($dado['postagem'])): ?>
+            <tr>
+                  <td colspan="6"><strong>Entrega:</strong>
+                        <?php echo $dado['postagem'] ?>
+                        <?php echo $dado['rastreio'] ? '('. $dado['rastreio'] .')' : '' ?>
+                  </td>                  
+            </tr>
+      <?php endif ?>
+      
+      </tbody>
+      <?php endforeach ?>
+      
+      <?php if(!empty($total) && $total > 0): ?>
+      <tbody>
+            <tr>
+                  <td colspan="5" align="right"><strong>Total Geral:</strong></td>
+                  <td><strong><?php echo number_format($total, 2, ',', '.') ?></strong></td>
+            </tr>
+      </tbody>
+      <?php endif ?>
+            
+      </table>
+            </div>
+      </div>
+      <?php endforeach ?>
+      </div>
+      <?php endif ?>      
+      
+      </div>
+
+</div>

@@ -1,0 +1,146 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <?php if($this->session->userdata('nivel') == 'Administrador' || $this->session->userdata('nivel') == 'Gerente'): ?>
+            <li class="active"><a href="vendas/listar-vendas">Listar Vendas</a></li>
+            <?php endif ?>
+          </ul>          
+        </div>
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Vendas</h1>
+          
+          <form action="vendas/listar-produtos" name="fvendas" id="fvendas" method="Post">
+            <div class="row">
+              <div class="col-md-offset-9 col-md-3">
+                  <div class="form-group">
+                      <label for="codigo">Buscar Produto</label>
+                       <div class="form-group">
+                          <input type="text" class="form-control" name="q" id="q">
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </form>
+          
+          <?php if ($this->session->flashdata('sucesso')): ?>
+          <div class="alert alert-success" role="alert">
+            <strong>Uhuuu!</strong> <?php echo $this->session->flashdata('sucesso'); ?>
+          </div>
+          <?php endif ?>
+          
+          <?php if ($this->session->flashdata('falha')): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Hmmm!</strong> <?php echo $this->session->flashdata('falha'); ?>
+          </div>
+          <?php endif ?>
+          
+            <?php if (count($produtos) > 0): ?>
+            <ul class="nav nav-tabs">
+            <?php $c = 0; foreach ($produtos as $categoria => $itens): $c++; ?>
+                <li role="presentation" <?php echo ($c == 1 && !validation_errors()) ? 'class="active" ' : '' ?>role="tablist"><a href="#<?php echo $categoria ?>" aria-controls="<?php echo $categoria ?>" role="tab" data-toggle="tab"><?php echo $categoria ?></a></li>
+            <?php endforeach ?>
+                <li role="presentation" <?php echo (count($produtos) == 0 || validation_errors()) ? 'class="active" ' : '' ?>role="tablist"><a href="#avulso" aria-controls="avulso" role="tab" data-toggle="tab">Venda Avulsa</a></li>
+            </ul>
+            
+            <div class="tab-content">
+            <?php $c = 0;  foreach ($produtos as $categoria => $itens): $c++;  ?>
+           
+                <div role="tabpanel" class="tab-pane<?php echo ($c == 1 && !validation_errors()) ? ' active ' : '' ?>" id="<?php echo $categoria ?>">
+                    
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                        <thead>
+                                <tr>
+                                    <th>Imagem</th>
+                                    <th>Código</th>
+                                    <th width="280">Modelo / Descrição</th>
+                                    <th>Qtde.</th>
+                                    <th>Valor</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        
+                        <?php foreach ($itens as $produto): ?>
+                                <tr>
+                                    <td>
+                                        <?php if(!empty($produto['imagem'])): ?>
+                                         <a href="<?php echo site_url($produto['imagem']) ?>" target="_blank"><img src="<?php echo $produto['imagem'] ?>" height="80" width="80"></a>
+                                        <?php else: ?>
+                                        <span class="no-img"><span class="glyphicon glyphicon-picture"></span></span>
+                                        <?php endif ?>
+                                    </td>
+                                    <td><strong><?php echo $produto['codigo'] ?></strong></td>
+                                    <td><?php echo $produto['modelo'] ? $produto['modelo'] : '--' ?><br>
+                                        <span class="itens"><?php echo nl2br($produto['descricao']) ?></span>
+                                    </td>
+                                    <td><?php echo $produto['quantidade'] ?></td>
+                                    <td>R$ <?php echo number_format($produto['valor'], 2, ',', '') ?></td>
+                                    <td class="opcoes">
+                                        <a href="vendas/adicionar-carrinho/<?php echo $produto['id'] ?>"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><span class="desc">Adicionar</span></a>
+                                    </td>
+                                </tr>
+                        <?php endforeach ?>
+                        
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            
+            <?php endforeach ?>
+
+                <div role="tabpanel" class="tab-pane<?php echo (count($produtos) == 0 || validation_errors()) ? ' active ' : '' ?>" id="avulso">
+          
+                    <form action="vendas/listar-produtos" name="favulso" id="favulso" method="Post">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                            <thead>
+                                    <tr>
+                                        <th>Descrição</th>
+                                        <th>Qtde.</th>
+                                        <th>Valor</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group<?php echo form_error('descricao') ? ' has-error' : '' ?>">
+                                                <input type="text" class="form-control" name="descricao" placeholder="Descrição" value="<?php echo set_value('descricao'); ?>">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group<?php echo form_error('quantidade') ? ' has-error' : '' ?>">
+                                                <input type="number" class="form-control" name="quantidade" placeholder="0" value="<?php echo set_value('quantidade') ?>">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group<?php echo form_error('valor') ? ' has-error' : '' ?>">
+                                                <input type="text" class="form-control valor" name="valor" placeholder="0,00" value="<?php echo set_value('valor') ?>">
+                                            </div>
+                                        </td>
+                                        <td class="opcoes">
+                                            <a href="#" onclick="$('#favulso').submit(); return false;"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><span class="desc">Adicionar</span></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+          <?php endif ?>  
+            
+          <?php if(!empty($paginacao)): ?>
+          <nav class="paginacao">
+            <?php echo $paginacao ?>
+          </nav>
+          <?php endif ?>
+
+        </div>
+    </div>
+</div>

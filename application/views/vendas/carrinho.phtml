@@ -1,0 +1,127 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="vendas">Listar Produtos <span class="sr-only">(atual)</span></a></li>
+            <li class="active"><a href="vendas/carrinho">Carrinho<?php echo $total_itens > 0 ? ' ('. $total_itens .')' : '' ?></a></li>
+            <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                    $this->session->userdata('nivel') == 'Gerente'): ?>
+            <li><a href="vendas/listar-vendas">Listar Vendas</a></li>
+            <?php endif ?>
+          </ul>          
+        </div>
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Carrinho</h1>
+          
+          <?php if (validation_errors()): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Hmmm!</strong> Alguns erros foram encontrados...
+          </div>
+          <?php endif ?>
+          
+          <form action="vendas/listar-produtos" name="fvendas" id="fvendas" method="Post">
+            <div class="row">
+              <div class="col-md-offset-9 col-md-3">
+                  <div class="form-group">
+                      <label for="codigo">Buscar Produto</label>
+                       <div class="form-group">
+                          <input type="text" class="form-control" name="q" id="q">
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </form>
+          
+          <?php if ($this->session->flashdata('sucesso')): ?>
+          <div class="alert alert-success" role="alert">
+            <strong>Uhuuu!</strong> <?php echo $this->session->flashdata('sucesso'); ?>
+          </div>
+          <?php endif ?>
+          
+          <?php if ($this->session->flashdata('falha')): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Hmmm!</strong> <?php echo $this->session->flashdata('falha'); ?>
+          </div>
+          <?php endif ?>
+          
+            <?php if (count($itens) > 0): ?>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                <thead>
+                        <tr>
+                            <th>Imagem</th>
+                            <th>Código</th>
+                            <th width="280">Modelo / Descrição</th>
+                            <th width="150">Qtde.</th>
+                            <th>Valor</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                <?php $c = 0;  foreach ($itens as $chave => $item): $c++;  ?>
+                    <tr>
+                        <td>
+                            <?php if(!empty($item['options']['img'])): ?>
+                            <a href="<?php echo site_url($item['options']['img']) ?>" target="_blank"><img src="<?php echo $item['options']['img'] ?>" height="80" width="80"></a>
+                            <?php else: ?>
+                            <span class="no-img"><span class="glyphicon glyphicon-picture"></span></span>
+                            <?php endif ?>
+                        </td>
+                        <td><strong><?php echo $item['name'] ?></strong></td>
+                        <td><?php echo !empty($item['options']['mod']) ? $item['options']['mod'] : '--' ?>
+                            <?php if (!empty($item['options']['dsc'])): ?>
+                            <br><span class="itens"><?php echo nl2br($item['options']['dsc']) ?></span>
+                            <?php endif ?>
+                        </td>
+                        <td>
+                            
+                            <form action="vendas/carrinho" name="fqtd" id="fqtd" method="Post">
+                                <input type="hidden" name="id" value="<?php echo $item['id'] ?>">
+                                <input type="hidden" name="nome" value="<?php echo $item['name'] ?>">
+                                <input type="hidden" name="rowid" value="<?php echo $item['rowid'] ?>">
+                                <div class="input-group<?php echo (form_error('quantidade') && $this->input->post('id') == $item['id']) ? ' has-error' : '' ?>">
+                                    <input type="number" class="form-control" name="quantidade" placeholder="0" value="<?php echo $item['qty'] ?>">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-refresh"></span></button>
+                                    </span>
+                                </div>
+                            </form>
+                        </td>
+                        <td>R$ <?php echo number_format($item['price'], 2, ',', '.') ?></td>
+                        <td>R$ <?php echo number_format($item['subtotal'], 2, ',', '.') ?></td>
+                        <td class="opcoes">
+                            <a href="vendas/remover-carrinho/<?php echo $item['rowid'] ?>" onclick="return confirm('Tem certeza que deseja remover?')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="desc">Remover</span></a>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+                    </tbody>
+                <tbody>
+                    <tr>
+                        <td colspan="7" align="right">= <span class="cl-verde">R$ <?php echo number_format($total, 2, ',', '.') ?></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pull-left">
+                <a href="vendas/limpar-carrinho" class="btn btn-primary" onclick="return confirm('Tem certeza que deseja limpar?')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>Limpar Carrinho</a>
+            </div>
+            
+            <div class="pull-right">
+                <a href="vendas/finalizar" class="btn btn-success"><span class="glyphicon glyphicon-cart" aria-hidden="true"></span>Finalizar Compra</a>
+            </div>
+          
+          <?php else: ?>
+          
+          <div class="vazio">
+            <div class="alert alert-warning" role="alert">
+              <strong>Ops!</strong> Não há nenhum produto no carrinho.
+            </div>
+          </div>
+          
+          <?php endif ?>
+        </div>
+    </div>
+</div>

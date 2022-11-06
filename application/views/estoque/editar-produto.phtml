@@ -1,0 +1,147 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="estoque/listar-produtos">Listar Produtos <span class="sr-only">(atual)</span></a></li>
+          </ul>          
+        </div>
+              
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Editar Produto
+
+        <div class="pull-right">
+          <a class="btn btn-default" href="estoque/listar-produtos" role="button"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span><span class="desc">Voltar</span></a>
+        </div>
+        <div class="clearfix"></div>
+
+        </h1>
+        <?php if (validation_errors()): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Hmmm!</strong> Alguns erros foram encontrados...
+          </div>
+          <?php endif ?>
+        
+          <form action="estoque/editar-produto/<?php echo $id ?>" name="festoque" id="festoque" method="Post" enctype="multipart/form-data">
+          
+          <div class="row">
+            <div class="col-md-6">
+                <div class="form-group<?php echo form_error('categoria') ? ' has-error' : '' ?>">
+                    <label for="categoria">Categoria</label>                  
+                    <select class="form-control" name="categoria" id="categoria">
+                        <option value="Cat-A"<?php echo set_select('categoria', 'Cat-A', ($produto['categoria'] == 'Cat-A' ? true : false)) ?>>Cat-A</option>
+                        <option value="Cat-B"<?php echo set_select('categoria', 'Cat-B', ($produto['categoria'] == 'Cat-B' ? true : false)) ?>>Cat-B</option>
+                        <option value="Cat-C"<?php echo set_select('categoria', 'Cat-C', ($produto['categoria'] == 'Cat-C' ? true : false)) ?>>Cat-C</option>                    
+                    </select>
+                    
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="codigo">Código</label>
+                     <div class="form-group<?php echo form_error('codigo') ? ' has-error' : '' ?>">
+                        <input type="text" class="form-control tamanho-codigo" name="codigo" id="codigo" placeholder="NNN9999" maxlength="7" value="<?php echo set_value('codigo', $produto['codigo']); ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="modelo">Modelo</label>
+                     <div class="form-group<?php echo form_error('modelo') ? ' has-error' : '' ?>">
+                        <input type="text" class="form-control tamanho-modelo" name="modelo" id="modelo" placeholder="Modelo" value="<?php echo set_value('modelo', $produto['modelo']); ?>">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="quantidade">Quantidade</label>
+                     <div class="form-group<?php echo form_error('quantidade') ? ' has-error' : '' ?>">
+                        <input type="number" class="form-control" name="quantidade" id="quantidade" placeholder="0" value="<?php echo set_value('quantidade', $produto['quantidade']) ?>">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                    $this->session->userdata('nivel') == 'Gerente'): ?>
+          <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="bruto">Valor Bruto</label>
+                     <div class="form-group<?php echo form_error('bruto') ? ' has-error' : '' ?>">
+                        <input type="text" class="form-control valor" name="bruto" id="bruto" placeholder="0,00" value="<?php echo set_value('bruto', number_format($produto['bruto'], 2, ',', '')) ?>">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="valor">Valor de Venda</label>
+                     <div class="form-group<?php echo form_error('valor') ? ' has-error' : '' ?>">
+                        <input type="text" class="form-control valor" name="valor" id="valor" placeholder="0,00" value="<?php echo set_value('valor', number_format($produto['valor'], 2, ',', '')) ?>">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <?php else: ?>
+          <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="valor">Valor de Venda</label>
+                     <div class="form-group<?php echo form_error('valor') ? ' has-error' : '' ?>">
+                        <input type="text" class="form-control valor" name="valor" id="valor" placeholder="0,00" value="<?php echo set_value('valor', number_format($produto['valor'], 2, ',', '')) ?>">
+                    </div>
+                </div>
+            </div>
+          </div>
+          <?php endif ?>
+          <div class="row">
+            <div class="col-md-6">
+                <label for="descricao">Descrição</label>
+                <div class="form-group<?php echo form_error('descricao') ? ' has-error' : '' ?>">
+                    <textarea name="descricao" id="descricao" class="form-control" rows="3" placeholder="Descrição"><?php echo set_value('descricao', $produto['descricao']) ?></textarea>
+                </div>
+            </div>
+          </div>  
+          
+          <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="imagem">Imagem</label>
+                     <div class="form-group">
+                        <input type="file" name="imagem" id="imagem" accept="image/*" class="form-control">
+                    </div>
+                </div>
+            </div>
+             <div class="col-md-2">
+                <?php if(!empty($produto['imagem'])): ?>
+                <div class="form-group">
+                    <label for="imagem">Atual</label>
+                    <div class="form-group">
+                    <a href="<?php echo site_url($produto['imagem']) ?>" target="_blank"><img src="<?php echo $produto['imagem'] ?>" class="img-responsive"></a>
+                    </div>
+                </div>
+               <?php endif ?>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+                <div class="form-group<?php echo form_error('status') ? ' has-error' : '' ?>">
+                    <label for="status">Status</label>                  
+                    <select class="form-control" name="status" id="status">
+                        <option value="Ativo"<?php echo set_select('status', 'Ativo', ($produto['status'] == 'Ativo' ? true : false)) ?>>Ativo</option>
+                        <option value="Inativo"<?php echo set_select('status', 'Inativo', ($produto['status'] == 'Inativo' ? true : false)) ?>>Inativo</option>
+                    </select>
+                </div>
+            </div>
+          </div>
+                
+          
+          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>Salvar</button>
+            
+          </form>
+      </div>
+    </div>
+  </div>

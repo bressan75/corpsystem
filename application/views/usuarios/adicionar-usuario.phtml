@@ -1,0 +1,73 @@
+<div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="usuarios">Listar Usuarios</a></li>
+            <li class="active"><a href="usuarios/adicionar-usuario">Adicionar Usuário <span class="sr-only">(atual)</span></a></li>
+          </ul>          
+        </div>
+                
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Adicionar Usuário
+          <div class="pull-right">
+            <a class="btn btn-default" href="#" role="button" onclick="window.history.back();"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span><span class="desc">Voltar</span></a>
+          </div>
+          <div class="clearfix"></div>
+          </h1>
+          
+          <?php if (validation_errors()): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Hmmm!</strong> Alguns erros foram encontrados...
+          </div>
+          <?php endif ?>
+          
+          <form action="usuarios/adicionar-usuario" name="fusuario" id="fusuario" method="Post">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group<?php echo form_error('nome') ? ' has-error has-feedback' : '' ?>">
+                      <label for="nome">Nome</label>
+                      <input type="text" class="form-control" name="nome" id="nome" value="<?php echo set_value('nome'); ?>">
+                      <?php if (form_error('nome')): ?>
+                      <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                      <span id="inputError2Status" class="sr-only">(error)</span>
+                      <?php endif ?>
+                    </div>
+                    <div class="form-group<?php echo form_error('email') ? ' has-error has-feedback' : '' ?>">
+                      <label for="email">E-mail</label>
+                      <input type="email" class="form-control" name="email" id="email" value="<?php echo set_value('email'); ?>">
+                      <?php if (form_error('email')): ?>
+                      <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                      <span id="inputError2Status" class="sr-only">(error)</span>
+                      <?php endif ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <div class="form-group<?php echo form_error('usuario') ? ' has-error has-feedback' : '' ?>">
+                      <label for="usuario">Usuário</label>
+                      <input type="text" class="form-control" name="usuario" id="usuario" value="<?php echo set_value('usuario'); ?>">
+                      <?php if (form_error('usuario')): ?>
+                      <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                      <span id="inputError2Status" class="sr-only">(error)</span>
+                      <?php endif ?>
+                    </div>
+                    
+                    <div class="form-group<?php echo form_error('senha') ? ' has-error has-feedback' : '' ?>">
+                      <label for="senha">Senha</label>
+                      <input type="password" class="form-control" name="senha" id="senha">
+                      <?php if (form_error('senha')): ?>
+                      <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                      <span id="inputError2Status" class="sr-only">(error)</span>
+                      <?php endif ?>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Adicionar</button>
+          </form>
+          
+          
+        </div>
+      </div>
+    </div>

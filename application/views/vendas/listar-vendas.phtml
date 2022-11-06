@@ -1,0 +1,139 @@
+<div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <?php if($this->session->userdata('nivel') == 'Administrador' || $this->session->userdata('nivel') == 'Gerente'): ?>
+            <li class="active"><a href="vendas/listar-vendas">Listar Vendas</a></li>
+            <?php endif ?>
+          </ul>          
+        </div>
+        
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Listar Vendas</h1>
+          
+          <form action="vendas/listar-vendas" name="fvendas" id="fvendas" method="Post">
+            <div class="row">
+              <div class="col-md-offset-6 col-md-3">
+                  <div class="form-group">
+                      <label for="codigo">Data Inicial</label>
+                       <div class="form-group">
+                          <input type="text" class="form-control data-box" name="data_ini" id="data_ini" value="<?php echo $ini ?>">
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-3">
+                  <div class="form-group">
+                      <label for="codigo">Data Final</label>
+                       <div class="input-group">
+                          <input type="text" class="form-control data-box" name="data_fim" id="data_fim" value="<?php echo $fim ?>">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
+                        </div>
+                  </div>
+              </div>
+            </div>
+          </form>
+          
+          <?php if ($this->session->flashdata('sucesso')): ?>
+          <div class="alert alert-success" role="alert">
+            <strong>Uhuuu!</strong> <?php echo $this->session->flashdata('sucesso'); ?>
+          </div>
+          <?php endif ?>
+          
+          <?php if ($this->session->flashdata('falha')): ?>
+          <div class="alert alert-danger" role="alert">
+            <strong>Ahhhh!</strong> <?php echo $this->session->flashdata('falha'); ?>
+          </div>
+          <?php endif ?>
+		  	     
+          <?php if (count($vendas) > 0): ?>
+          
+          <div class="row">
+            <div class="col-md-9">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>N.</th>
+                        <th>Data</th>
+                        <th>Vendedor</th>
+                        <th>Cliente</th>
+                        <th>R$</th>
+                        <th class="opcoes">Opções</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php $total = 0; $qtd_vendas = 0; ?>	
+					  
+                      <?php foreach ($vendas as $venda): ?>
+                      <?php $total += $venda['total']; ?>
+                      <?php $c = 0; $itens  = ''; $desc = ''; foreach ($venda['itens'] as $item): $c++ ?>
+                      <?php if ($item['status'] != 'Removido'): ?>
+                      <?php $qtd_vendas += $item['quantidade'] ?>
+                      <?php endif ?>
+						  <?php $desc .=  $item['item']  ?>
+						  <?php $desc .= $c < count($venda['itens']) ? ', ' : '. ' ?>
+						  <?php $itens .= '<strong>Código</strong>: '. $item['item'] . ($item['quantidade'] ? '<br><strong>Quantidade:</strong> '. $item['quantidade'] . ($item['descricao'] ? '<br><strong>Descrição:</strong> '. $item['descricao'] : '') : '') . '<br><strong>Valor:</strong> '. number_format($item['valor'], 2, ',', '.') ?>
+						  <?php $itens .= $c < count($venda['itens']) ? '<hr>' : '' ?>
+                      <?php endforeach ?>
+                      
+					  <tr>
+                        <td><?php echo $venda['id'] ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($venda['data'])) ?></td>
+                        <td><?php echo $venda['autor'] ?></td>
+                        <td>
+                              <span data-toggle="popover" placement="top" title="Itens do Pedido" data-content="<?php echo $itens ?>">
+                              <span data-toggle="tooltip" title="<?php echo $venda['cliente'] ?>"><?php echo character_limiter($venda['cliente'], 25) ?></span>
+                                  <span class="itens">
+                                  <?php echo character_limiter($desc, 25) ?>
+                                  </span>
+                              </span>
+                        </td>                  
+                        <td><?php echo $venda['total'] ? number_format($venda['total'], 2, ',', '.') : '--'  ?></td>
+                        
+                        <td class="opcoes">
+                          <a href="pedidos/ver-pedido/<?php echo $venda['cliente_id'] ?>/<?php echo $venda['id'] ?>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span class="desc">Ver</span></a>                    
+                        </td>
+                      </tr>
+                      <?php endforeach ?>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Itens vendidos</th>
+                        <th align="right">R$</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><?php echo $qtd_vendas; ?></td>
+                            <td align="right"><span class="cl-verde"><strong><?php echo number_format($total, 2, ',', '.') ?></strong></span></td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
+                                
+            </div>
+        <?php if(!empty($paginacao)): ?>
+          <nav class="paginacao">
+            <?php echo $paginacao ?>
+          </nav>
+          <?php endif ?>
+          
+          <?php else: ?>
+          <div class="vazio">
+            <div class="alert alert-warning" role="alert">
+              <strong>Ops!</strong> Não há vendas cadastradas para o período selecionado.
+            </div>
+          </div>
+          <?php endif ?>
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,158 @@
+<div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+          <li><a href="clientes">Listar Clientes</a></li>
+          <li><a href="clientes/adicionar-cliente">Adicionar Cliente</a></li>
+        </ul>          
+      </div>
+              
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Editar Cliente
+        <?php if(!$this->input->post()): ?>
+        <div class="pull-right">
+          <a class="btn btn-default" href="javascript:history.back();" role="button"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span><span class="desc">Voltar</span></a>
+        </div>
+        <div class="clearfix"></div>
+        <?php endif ?>
+        </h1>
+        
+        <?php if (validation_errors()): ?>
+        <div class="alert alert-danger" role="alert">
+          <strong>Hmmm!</strong> Alguns erros foram encontrados...
+        </div>
+        <?php endif ?>
+        
+        <form action="clientes/editar-cliente/<?php echo $id ?>" name="fcliente" id="fcliente" method="Post">
+        <input type="hidden" name="id" id="id" value="<?php echo $id ?>">
+          <div class="row">
+              <div class="col-sm-6">
+                  
+                  <div class="form-group<?php echo form_error('cliente') ? ' has-error' : '' ?>">
+                    <label for="cliente">Cliente</label>
+                    <input type="text" class="form-control" name="cliente" id="cliente" value="<?php echo set_value('cliente', $cliente['cliente']); ?>">
+                  </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group<?php echo form_error('documento') ? ' has-error' : '' ?>">
+                                <label for="documento">Documento</label>
+                                <input type="text" class="form-control mask-doc" name="documento" id="documento" value="<?php echo set_value('documento', $cliente['documento']); ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group<?php echo form_error('nascimento') ? ' has-error' : '' ?>">
+                                <label for="nascimento">Data de nascimento</label>
+                                <input type="text" class="form-control mask-data" name="nascimento" id="nascimento" value="<?php echo set_value('nascimento', date('d/m/Y', strtotime($cliente['nascimento']))); ?>">
+                            </div>
+                        </div>
+                    </div>
+              
+                    <div class="row">
+                        <div class="col-sm-6">                            
+                            <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" class="form-control" name="email" id="email" value="<?php echo set_value('email', $cliente['email']); ?>">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="telefone">Telefone</label>
+                                <input type="telefone" class="form-control mask-fone" name="telefone" id="telefone" value="<?php echo set_value('telefone', $cliente['telefone']); ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group<?php echo form_error('cep') ? ' has-error' : '' ?>">
+                              <label for="cep">CEP</label>
+                              <input type="text" class="form-control cep mask-cep" name="cep" id="cep" value="<?php echo set_value('cep', $cliente['cep']); ?>" maxlength="9">
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div class="form-group<?php echo form_error('endereco') ? ' has-error' : '' ?>">
+                              <label for="endereco">Endereço</label>
+                              <input type="text" class="form-control" name="endereco" id="endereco" value="<?php echo set_value('endereco', $cliente['endereco']); ?>">
+                            </div>
+                        </div>                        
+                        <div class="col-sm-4">
+                            <div class="form-group<?php echo form_error('numero') ? ' has-error' : '' ?>">
+                              <label for="numero">N.</label>
+                              <input type="text" class="form-control" name="numero" id="numero" value="<?php echo set_value('numero', $cliente['numero']); ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group<?php echo form_error('complemento') ? ' has-error' : '' ?>">
+                        <label for="complemento">Complemento</label>
+                        <input type="text" class="form-control" name="complemento" id="complemento" value="<?php echo set_value('complemento', $cliente['complemento']); ?>">
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="form-group<?php echo form_error('bairro') ? ' has-error' : '' ?>">
+                              <label for="bairro">Bairro</label>
+                              <input type="text" class="form-control" name="bairro" id="bairro" value="<?php echo set_value('bairro', $cliente['bairro']); ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-5">
+                            <div class="form-group<?php echo form_error('cidade') ? ' has-error' : '' ?>">
+                              <label for="cidade">Cidade</label>
+                              <input type="text" class="form-control" name="cidade" id="cidade" value="<?php echo set_value('cidade', $cliente['cidade']); ?>">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="form-group<?php echo form_error('estado') ? ' has-error' : '' ?>">
+                              <label for="estado">Estado</label>
+                              <input type="text" class="form-control" name="estado" id="estado" value="<?php echo set_value('estado', $cliente['estado']); ?>">
+
+                            </div>
+                        </div>
+                    </div>
+
+                  
+                  <div class="form-group">
+                    <label for="observacao">Observação</label>
+                    <textarea name="observacao" class="form-control" rows="3"><?php echo set_value('observacao', $cliente['observacao']); ?></textarea>
+                  </div>
+                  
+                  <div class="form-group<?php echo form_error('origem') ? ' has-error' : '' ?>"">
+                    <label for="origem">Origem</label>
+                    <select name="origem" id="origem" class="form-control">
+                          <option value="">- Selecione -</option>
+                          <option value="Site"<?php echo set_select('origem', 'Site', ($cliente['origem'] == 'Site' ? true : false)) ?>>Site</option>                          
+                          <option value="Google"<?php echo set_select('origem', 'Google', ($cliente['origem'] == 'Google' ? true : false)) ?>>Google</option>
+                          <option value="Facebook"<?php echo set_select('origem', 'Facebook', ($cliente['origem'] == 'Facebook' ? true : false)) ?>>Facebook</option>
+                          <option value="Outros"<?php echo set_select('origem', 'Outros', ($cliente['origem'] == 'Outros' ? true : false)) ?>>Outros</option>
+                    </select>
+                 </div>
+                  
+                  <div class="row">
+                        <div class="col-sm-6">
+                   
+                            <div class="form-group<?php echo form_error('status') ? ' has-error has-feedback' : '' ?>">
+                               <label for="status">Status</label>
+                               
+                               <select name="status" id="status" class="form-control">
+                                 <option value="Ativo"<?php echo set_select('status', 'Ativo', ($cliente['status'] == 'Ativo' ? true : false)); ?>>Ativo</option>
+                                 <option value="Inativo"<?php echo set_select('status', 'Inativo', ($cliente['status'] == 'Inativo' ? true : false)); ?>>Inativo</option>
+                               </select>
+                               
+                               <?php if (form_error('status')): ?>
+                               <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                               <span id="inputError2Status" class="sr-only">(error)</span>
+                               <?php endif ?>
+                             </div>
+                        </div>
+                    </div> 
+              </div>
+          </div>
+
+          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>Salvar</button>
+        </form>
+        
+        
+      </div>
+    </div>
+  </div>

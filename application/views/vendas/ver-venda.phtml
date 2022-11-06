@@ -1,0 +1,117 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="vendas">Listar Produtos <span class="sr-only">(atual)</span></a></li>
+            <li><a href="vendas/carrinho">Carrinho<?php echo $total_itens > 0 ? ' ('. $total_itens .')' : '' ?></a></li>
+            <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                    $this->session->userdata('nivel') == 'Gerente'): ?>
+            <li class="active"><a href="vendas/listar-vendas">Listar Vendas</a></li>
+            <?php endif ?>
+          </ul>          
+        </div>
+        
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">Detalhes da Venda (<?php echo $vid ?>)
+                <div class="pull-right">
+                    <a class="btn btn-default" href="vendas/listar-vendas" role="button"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span><span class="desc">Voltar</span></a>
+                </div>
+                <div class="clearfix"></div>
+            </h1>
+        
+            <?php if ($this->session->flashdata('sucesso')): ?>
+              <div class="alert alert-success" role="alert">
+                <strong>Uhuuu!</strong> <?php echo $this->session->flashdata('sucesso'); ?>
+              </div>
+              <?php endif ?>
+              
+              <?php if ($this->session->flashdata('falha')): ?>
+              <div class="alert alert-danger" role="alert">
+                <strong>Ahhhh!</strong> <?php echo $this->session->flashdata('falha'); ?>
+              </div>
+              <?php endif ?>
+          
+            <?php $c = 0; foreach ($vendas as $status => $dados):  $c++; ?>
+            <div class="table-responsive">
+                <table class="table">
+                
+                <?php $total = 0; foreach ($dados as $dado): $total += $dado['subtotal']; ?>
+                <thead>
+                      <tr>
+                            <th class="titulo" colspan="7">
+                                  <span class="pull-left">#<?php echo $dado['id'] ?></span>
+                                  <span class="pull-right"><?php echo date('d/m/Y', strtotime($dado['data'])) ?></span>
+                            </th>
+                      </tr> 
+                      <tr>
+                            <th>Imagem</th>
+                            <th>Código</th>
+                            <th width="280">Modelo / Descrição</th>
+                            <th width="150">Qtde.</th>
+                            <th>Valor</th>
+                            <th>Subtotal</th>
+                            <th>Status</th>
+                        </tr>
+                  </thead>
+                <tbody>
+                <?php if(!empty($dado['itens'])): ?>
+                
+                <?php foreach ($dado['itens'] as $item): ?>
+                
+                      <tr>
+                            <td>
+                                <?php if(!empty($item['imagem'])): ?>
+                                <a href="<?php echo site_url($item['imagem']) ?>" target="_blank"><img src="<?php echo $item['imagem'] ?>" height="80" width="80"></a>
+                                <?php else: ?>
+                                <span class="no-img"><span class="glyphicon glyphicon-picture"></span></span>
+                                <?php endif ?>
+                            </td>
+                            <td><strong><?php echo $item['codigo'] ?></strong></td>
+                            <td><?php echo !empty($item['modelo']) ? $item['modelo'] : '--' ?>
+                                <?php if (!empty($item['descricao'])): ?>
+                                <br><span class="itens"><?php echo nl2br($item['descricao']) ?></span>
+                                <?php endif ?>
+                            </td>
+                            <td><?php echo $item['quantidade'] ?></td>
+                            <td>R$ <?php echo number_format($item['valor'], 2, ',', '.') ?></td>
+                            <td>R$ <?php echo number_format($item['valor'] * $item['quantidade'], 2, ',', '.') ?></td>
+                            <td>
+                                  <div class="form-group">
+                                        <select name="status" class="mudar-status form-control input-sm">
+                                              <option value="vendas/status-venda/<?php echo $cid ?>/<?php echo $vid ?>/<?php echo $item['id'] ?>/1"<?php echo $item['status'] == 'Concluído' ? ' selected="selected"' : '' ?>>Concluído</option>
+                                              <option value="vendas/status-venda/<?php echo $cid ?>/<?php echo $vid ?>/<?php echo $item['id'] ?>/2"<?php echo $item['status'] == 'Cancelado' ? ' selected="selected"'  : '' ?>>Cancelado</option>
+                                        </select>
+                                  </div>
+                            </td>
+                        </tr>
+                
+                <?php endforeach ?>
+                
+                <?php endif ?>      
+                
+                <?php if(!empty($dado['subtotal'])): ?>
+                      <tr>
+                            <td colspan="6" align="right"><strong>Total da Compra:</strong></td>
+                            <td><strong><?php echo number_format($dado['subtotal'], 2, ',', '.') ?></strong></td>
+                      </tr>
+                <?php endif ?>
+                
+                
+                </tbody>
+                <?php endforeach ?>
+                
+                <?php if(!empty($total) && $total > 0): ?>
+                <tbody>
+                      <tr>
+                            <td colspan="6" align="right"><strong>Total Geral:</strong></td>
+                            <td><strong><?php echo number_format($total, 2, ',', '.') ?></strong></td>
+                      </tr>
+                </tbody>
+                <?php endif ?>
+                      
+                </table>
+            </div>
+            <?php endforeach ?>
+        </div>
+    </div>
+</div>

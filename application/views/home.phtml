@@ -1,0 +1,309 @@
+<?php if($this->session->userdata('nivel') == 'Administrador' ||
+         $this->session->userdata('nivel') == 'Gerente'): ?>
+<script type="text/javascript">
+var chart;
+
+var x1 = <?php echo json_encode($clientes_pedidos_ativos['meses']); ?>;
+var y1 = <?php echo json_encode($clientes_pedidos_ativos['valor']); ?>;
+
+var x3 = <?php echo json_encode($pedido_valor_mensal['meses']); ?>;
+var y3 = <?php echo json_encode($pedido_valor_mensal['valor']); ?>;
+
+
+var pendentes = <?php echo $pedido_status['Pendente']; ?>;
+var producao = <?php echo $pedido_status['Produção']; ?>;
+var enviado = <?php echo $pedido_status['Enviado']; ?>;
+var concluido = <?php echo $pedido_status['Concluído']; ?>;
+var cancelado = <?php echo $pedido_status['Cancelado']; ?>;
+
+$(function() {
+    $('#grafico1').highcharts({
+        chart: {            
+            type: 'column'
+        },
+        title: {
+            text: 'Clientes e Pedidos (3 meses)'
+        },
+        xAxis: {
+            categories: x1            
+        },
+        yAxis: {
+            title: {
+                text: ''
+            },
+            labels: {
+                formatter: function() {
+                    return this.value;
+                }
+            },
+			plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>'+ this.y +'</b>';
+            }
+        },
+		plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: false
+                },                
+                enableMouseTracking: true
+            }
+        },
+		legend: {
+            borderWidth: 0
+        },
+		dataLabels: {
+            enabled: true
+        },
+        credits: {
+            enabled: false
+        },
+        series: y1
+    });    
+    
+    $('#grafico2').highcharts({
+        chart: {            
+            type: 'column'
+        },
+        title: {
+            text: 'Pedidos (3 meses)'
+        },
+        xAxis: {
+            categories: x3
+        },
+        yAxis: {
+            title: {
+                text: ''
+            },
+            labels: {
+                formatter: function() {
+                    return this.value;
+                }
+            },
+			plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            formatter: function() {
+                return '<b>R$ '+ this.y +'</b>';
+            }
+        },
+		plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: false
+                },                
+                enableMouseTracking: true
+            }
+        },
+		legend: {
+            borderWidth: 0
+        },
+		dataLabels: {
+            enabled: true
+        },
+        credits: {
+            enabled: false
+        },
+        series: y3
+    });
+    
+    $('#grafico3').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Pedidos'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            name: "Pedidos",
+            colorByPoint: true,
+            data: [{
+                name: "Pendentes",
+                y: pendentes,
+                sliced: true,
+                selected: true
+            }, {
+                name: "Produção",
+                y: producao
+            }, {
+                name: "Enviado",
+                y: enviado
+            }, {
+                name: "Concluído",
+                y: concluido
+            }, {
+                name: "Cancelado",
+                y: cancelado,
+                color:"#cc0000"
+            }]
+        }],
+        legend: {
+            borderWidth: 0
+        },
+        credits: {
+            enabled: false
+        }
+    });
+
+});
+</script>
+<?php endif ?>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="main">
+            <h1 class="page-header">Seja bem-vindo(a) <strong><?php echo $nome ?></strong>.</h1>
+            
+            <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                     $this->session->userdata('nivel') == 'Gerente'): ?>
+            <div class="row area">
+                <div class="col-lg-4">                    
+                    <div id="grafico1">Carregando...</div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="grafico2">Carregando...</div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="grafico3">Carregando...</div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            
+                       
+			<?php if (count($pedidos) > 0): ?>
+			<div class="area">
+                <h2>Últimos Pedidos</h2>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>N.</th>
+                    <th>Cliente</th>                  
+                    <th>Total</th>
+                    <th>Entrega</th>
+                    <th>Rastreio</th>
+                    <th>Autor</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                    <th class="opcoes">Opções</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($pedidos as $pedido): ?>
+                  <?php $c = 0; $itens  = ''; foreach ($pedido['itens'] as $item): $c++ ?>
+                          <?php $itens .= $item['item'] ?>
+                          <?php $itens .= $c < count($pedido['itens']) ? ', ' : '.' ?>
+                  <?php endforeach ?>
+                  <tr>
+                    <td><?php echo $pedido['id'] ?></td> 
+                    <td>
+					  <span data-toggle="tooltip" title="<?php echo character_limiter($itens, 125) ?>">
+					  <?php echo $pedido['cliente'] ?>
+					  <span class="itens">
+					  <?php echo character_limiter($itens, 25) ?>
+					  </span>
+					  </span>
+                    </td>                  
+                    <td><?php echo $pedido['total'] ? 'R$ '. number_format($pedido['total'], 2, ',', '.') : '--'  ?></td>
+                    <td><?php echo $pedido['postagem']; ?></td>
+                    <td><?php echo $pedido['rastreio'] ? $pedido['rastreio'] : '--'  ?></td>
+                    <td><?php echo $pedido['autor'] ? $pedido['autor'] : '--'  ?></td>             
+                    <td><?php echo $pedido['status'] ? $pedido['status'] : '--'  ?></td>
+                    <td><?php echo date('d/m/Y', strtotime($pedido['data'])) ?></td>
+                    <td class="opcoes">
+                      <a href="pedidos/ver-pedido/<?php echo $pedido['cliente_id'] ?>/<?php echo $pedido['id'] ?>"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span class="desc">Ver</span></a>                    
+                      <a href="pedidos/editar-pedido/<?php echo $pedido['id'] ?>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="desc">Editar</span></a>
+                      <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                               $this->session->userdata('nivel') == 'Gerente'): ?>
+                      <a href="pedidos/remover-pedido/pendente/<?php echo $pedido['id'] ?>" onclick="return confirm('Deseja realmente remover esse registro?')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span class="desc">Remover</span></a>
+                      <?php endif ?>
+                    </td>
+                  </tr>
+                  <?php endforeach ?>
+                </tbody>
+              </table>
+              </div>
+              <div class="pull-right">
+                    <a href="pedidos">Listar todos pedidos</a>
+                </div>
+            </div>
+			<div class="clearfix"></div>
+			<?php endif ?>
+			
+			
+            <?php if(count($clientes) > 0): ?>
+            <div class="area">
+                <h2>Últimos Clientes</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>N.</th>
+                          <th>Cliente</a></th>
+                          <th>E-mail</th>
+                          <th>Telefone</th>
+                          <th>CEP</th>
+                          <th>Data</th>
+                          <th class="opcoes">Opções</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach ($clientes as $cliente): ?>
+                        <tr>
+						  <td><?php echo $cliente['id'] ?></td>
+						  <td><?php echo $cliente['cliente'] ?></td>
+						  <td><?php echo $cliente['email'] ? $cliente['email'] : '--' ?></td>
+						  <td><?php echo $cliente['telefone'] ? $cliente['telefone'] : '--'  ?></td>
+						  <td><?php echo $cliente['cep'] ? $cliente['cep'] : '--'  ?></td>                   
+						  <td><?php echo date('d/m/Y', strtotime($cliente['data'])) ?></td>
+						  <td><?php echo $cliente['status'] ?></td>
+						  <td class="opcoes">
+							<a href="pedidos/adicionar-pedido/<?php echo $cliente['id'] ?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span class="desc">Novo Pedido</span></a>                    
+							<a href="clientes/editar-cliente/<?php echo $cliente['id'] ?>"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="desc">Editar</span></a>
+							
+                            <?php if($this->session->userdata('nivel') == 'Administrador' ||
+                                     $this->session->userdata('nivel') == 'Gerente'): ?>
+                            <a href="clientes/remover-cliente/<?php echo $cliente['status'] ?>/<?php echo $cliente['id'] ?>" onclick="return confirm('Deseja realmente remover esse registro?')"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span><span class="desc">Remover</span></a>
+                            <?php endif ?>
+						  </td>
+						</tr>
+                        <?php endforeach ?>
+                      </tbody>
+                    </table>
+                  </div>
+                    <div class="pull-right">
+                        <a href="clientes">Listar todos clientes</a>
+                    </div>
+            </div>
+            <div class="clearfix"></div>
+            <?php endif ?>
+            <?php endif ?>
+        </div>
+    </div>
+</div>
